@@ -35,7 +35,9 @@ const addTodo = (newTodo) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(newTodo)
-  });
+  })
+    .then((res) => res.json())
+    .then((todos) => getTodos());
 };
 
 listenToAddTodoForm();
