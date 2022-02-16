@@ -1,4 +1,5 @@
 const todoList = document.getElementById('todo-list');
+const addTodoForm = document.getElementById('add-todo-form');
 
 const getTodos = () => {
   fetch('http://localhost:3000/todos')
@@ -16,4 +17,26 @@ const renderTodos = (todos) => {
   todoList.innerHTML = todosList.join('');
 };
 
+const listenToAddTodoForm = () => {
+  addTodoForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const newTodo = {
+      title: event.target.title.value,
+      completed: false
+    };
+    addTodo(newTodo);
+  });
+};
+
+const addTodo = (newTodo) => {
+  fetch('http://localhost:3000/todos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newTodo)
+  });
+};
+
+listenToAddTodoForm();
 getTodos();
