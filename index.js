@@ -8,6 +8,9 @@ const getTodos = () => {
 
 const renderTodos = (todos) => {
   const todosList = todos.map((todo) => {
+    if (todo.completed) {
+      return `<li class='completed '>${todo.title} </li>`;
+    }
     return `<li>${todo.title} </li>`;
   });
   todoList.innerHTML = todosList.join('');
