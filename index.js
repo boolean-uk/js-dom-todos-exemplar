@@ -1,9 +1,15 @@
 const state = {
-  todos: []
+  todos: [],
+  uncompletedOnly: false
 }
 
 function getTodos() {
-  fetch('http://localhost:3000/todos')
+  let url = 'http://localhost:3000/todos'
+  if(state.uncompletedOnly) {
+    url += '?completed=false'
+  }
+
+  fetch(url)
     .then(function(response){
       return response.json()
     })
@@ -55,23 +61,30 @@ function completeTodo(todo) {
       return response.json()
     })
     .then(function(updatedTodo){
-      //Really important side note -we don't updated the 
-      //updatedTodo - because that's the response from the 
-      //server. We want to update the todo that was passed
-      //to the function because that's the one stored in the
-      //state - so by updating that, when we call render,
-      //it will be updated on the page.
-
-      //Update the state - set the todo object as completed
-      todo.completed = true
-      //Render the page
-      render()
+      //Reload the todos from the server - we could
+      //also just updated the todo and call the render
+      //function, but in this exemplar we have a toggle filter
+      //so if the filter is on, we wouldn't want to display
+      //the todo once it's completed, so would need to 
+      //remove from the list here. To keep the code
+      //simpler we just reload everything from the server
+      //and that makes sure the correct filter logic
+      //is applied
+      getTodos()
     })
 }
 
 const todoListEl = document.querySelector('#todo-list')
 const todoFormEl = document.querySelector('#todo-form')
 const todoInputEl = document.querySelector('#todo-input')
+const filterEl = document.querySelector('#uncompleted-filter')
+
+filterEl.addEventListener('click', function() {
+  //Update our state
+  state.uncompletedOnly = filterEl.checked
+  //Reload the todos from the server
+  getTodos()
+})
 
 todoFormEl.addEventListener('submit', function(e) {
   e.preventDefault()
