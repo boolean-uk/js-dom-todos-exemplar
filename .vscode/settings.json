@@ -1,4 +1,10 @@
 {
-  "cSpell.words": ["Todos"],
-  "liveServer.settings.ignoreFiles": ["**/*.json"]
+	"cSpell.words": ["Todos"],
+	"liveServer.settings.ignoreFiles": [
+		".vscode/**",
+		"**/*.scss",
+		"**/*.sass",
+		"**/*.ts",
+		"**/*.json"
+	]
 }
