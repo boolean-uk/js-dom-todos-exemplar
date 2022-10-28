@@ -25,7 +25,43 @@ const errorElement = document.querySelector(".error");
 const state = {
   todos: [],
 };
+
 // HANDLE ACTIONS CODE
+// OBJ 2
+// detect form submit event
+form.addEventListener("submit", (event) => {
+  // prevent default behaviour;
+  event.preventDefault();
+
+  // read the new title
+  // event.target is the <form>
+  // event.target[0] is the first <input> in the form
+  const newTitle = event.target[0].value;
+  const newTodoData = {
+    title: newTitle,
+    completed: false,
+  };
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newTodoData),
+  };
+
+  // send fetch POST reuqest for a new todo
+  fetch("http://localhost:4000/todos", requestOptions)
+    .then((res) => res.json())
+    .then((newTodo) => {
+      // when repsonse comes back add todo to state.todos
+      state.todos.push(newTodo);
+      // and re-render list
+      renderAllTodos();
+    });
+
+  // reset form as soon as we are submitting it
+  form.reset();
+});
 
 // RENDER CODE
 function createTodoLI(todo) {
