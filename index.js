@@ -21,6 +21,10 @@ const errorElement = document.querySelector(".error");
 // option 2: detect form input events and store the title of the new todo in state
 // then continue with option 1
 
+// OBJ 3
+// add a button to complete a todo
+// when clicked, the todo will be updated via PATCH setting it to completed and the frontend will be re-rendered
+
 // STATE
 const state = {
   todos: [],
@@ -63,6 +67,33 @@ form.addEventListener("submit", (event) => {
   form.reset();
 });
 
+function completeTodo(todo) {
+  // send a PATCH request to update this specific todo
+  // setting the completed property = true
+  const updatedData = {
+    completed: true,
+  };
+  const requestOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  };
+
+  const url = `http://localhost:4000/todos/${todo.id}`;
+
+  // send fetch POST reuqest for a new todo
+  fetch(url, requestOptions)
+    .then((res) => res.json())
+    .then((updatedTodo) => {
+      // when repsonse comes back update our local state todo
+      todo.completed = true; // note: todo JS object was given to us and is the one in Local State
+      // and re-render list
+      renderAllTodos();
+    });
+}
+
 // RENDER CODE
 function createTodoLI(todo) {
   const li = document.createElement("li");
@@ -73,6 +104,13 @@ function createTodoLI(todo) {
     li.setAttribute("class", "completed");
   }
 
+  // add a complete button
+  // on click, call the completeTodo function
+  const completeButton = document.createElement("button");
+  completeButton.innerText = "Complete";
+  completeButton.addEventListener("click", () => completeTodo(todo));
+
+  li.appendChild(completeButton);
   return li;
 }
 
