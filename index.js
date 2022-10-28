@@ -94,6 +94,31 @@ function completeTodo(todo) {
     });
 }
 
+function deleteTodo(todo) {
+  // send a DELETE request to remove this specific todo
+  const requestOptions = {
+    method: "DELETE",
+  };
+
+  const url = `http://localhost:4000/todos/${todo.id}`;
+
+  // send fetch POST reuqest for a new todo
+  fetch(url, requestOptions)
+    .then((res) => res.json())
+    .then((data) => {
+      // when repsonse comes back update our local state todo
+      // filtering out the `todo` that was deleted (ie. keeping in all the rest)
+      const remainingTodos = state.todos.filter(
+        (localTodo) => localTodo.id !== todo.id
+      );
+      state.todos = remainingTodos;
+
+      todo.completed = true; // note: todo JS object was given to us and is the one in Local State
+      // and re-render list
+      renderAllTodos();
+    });
+}
+
 // RENDER CODE
 function createTodoLI(todo) {
   const li = document.createElement("li");
@@ -109,8 +134,15 @@ function createTodoLI(todo) {
   const completeButton = document.createElement("button");
   completeButton.innerText = "Complete";
   completeButton.addEventListener("click", () => completeTodo(todo));
-
   li.appendChild(completeButton);
+
+  // add a delete button
+  // on click, call the deleteTodo function
+  const deleteButton = document.createElement("button");
+  deleteButton.innerText = "Delete";
+  deleteButton.addEventListener("click", () => deleteTodo(todo));
+  li.appendChild(deleteButton);
+
   return li;
 }
 
